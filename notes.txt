@@ -1,0 +1,7 @@
+////////// USING PASSPORT - JWT
+1. install passport, passport-jwt to use jwt strategy
+2. use jwt in users/login route to sign the token for access to private routes
+3. initialize passport and add config through a config file.
+4. In config file, if opts array (secretOrKey,jwtFromRequest) is passed correctly, it will return the payload of user data (jwt_payload)
+5. Then, we can add middleware function of passport to routes that need authentication.
+6. To test it out, use postman, fill in email and password, pass token into the Authorization in request Headers.
