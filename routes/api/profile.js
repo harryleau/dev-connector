@@ -5,6 +5,8 @@ const passport = require('passport');
 
 // Load Validation
 const validateProfileInput = require('../../validation/profile');
+const validateExperienceInput = require('../../validation/experience');
+const validateEducationInput = require('../../validation/education');
 
 // Load Profile Model
 const Profile = require('../../models/Profile');
@@ -143,6 +145,123 @@ router.post('/', passport.authenticate('jwt', { session: false }), (req, res) =>
           })
       }
     })
+});
+
+// @route   POST api/profile/experience
+// @desc    Add exp to profile
+// @access  Private
+router.post('/experience', passport.authenticate('jwt', { session: false }), (req, res) => {
+  const { errors, isValid } = validateExperienceInput(req.body);
+
+  // check validation
+  if(!isValid) {
+    // return any errors with 400 status
+    return res.status(400).json(errors);
+  }
+  Profile.findOne({ user: req.user.id })
+    .then(profile => {
+      const newExp = {
+        title: req.body.title,
+        company: req.body.company,
+        location: req.body.location,
+        from: req.body.from,
+        to: req.body.to,
+        current: req.body.current,
+        description: req.body.description
+      };
+
+      // add to exp array
+      profile.experience.unshift(newExp);
+
+      profile.save().then(profile => res.json(profile));
+    })
+    .catch(e => res.json(e));
+});
+
+// @route   POST api/profile/education
+// @desc    Add education to profile
+// @access  Private
+router.post('/education', passport.authenticate('jwt', { session: false }), (req, res) => {
+  const { errors, isValid } = validateEducationInput(req.body);
+
+  // check validation
+  if(!isValid) {
+    // return any errors with 400 status
+    return res.status(400).json(errors);
+  }
+  
+  Profile.findOne({ user: req.user.id })
+    .then(profile => {
+      const newEdu = {
+        school: req.body.school,
+        degree: req.body.degree,
+        fieldofstudy: req.body.fieldofstudy,
+        from: req.body.from,
+        to: req.body.to,
+        current: req.body.current,
+        description: req.body.description
+      };
+
+      // add to exp array
+      profile.education.unshift(newEdu);
+
+      profile.save().then(profile => res.json(profile));
+    })
+    .catch(e => res.json(e));
+});
+
+// @route   DELETE api/profile/experience/:exp_id
+// @desc    delete on experience item from profile
+// @access  Private
+router.delete('/experience/:exp_id', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Profile.findOne({ user: req.user.id })
+    .then(profile => {
+     // get remove index
+     const removeIndex = profile.experience.map(item => item.id).indexOf(req.params.exp_id);
+     // check if id not found
+     if(removeIndex < 0) {
+       return res.status(404).json({ notfound: 'experience item not found' });
+     }
+     // splice education from array
+     profile.experience.splice(removeIndex, 1);
+     // save
+     profile.save().then(profile => res.json(profile))
+       .catch(e => res.status(404).json(e));
+    })
+    .catch(e => res.status(404).json(e));
+});
+
+// @route   DELETE api/profile/education/:edu_id
+// @desc    delete one education item from profile
+// @access  Private
+router.delete('/education/:edu_id', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Profile.findOne({ user: req.user.id })
+    .then(profile => {
+      // get remove index
+      const removeIndex = profile.education.map(item => item.id).indexOf(req.params.edu_id);
+      // check if id not found
+      if(removeIndex < 0) {
+        return res.status(404).json({ notfound: 'education item not found' });
+      }
+      // splice education from array
+      profile.education.splice(removeIndex, 1);
+      // save
+      profile.save().then(profile => res.json(profile))
+        .catch(e => res.status(404).json(e));
+    })
+    .catch(e => res.status(404).json(e));
+});
+
+// @route   DELETE api/profile
+// @desc    delete user and profile
+// @access  Private
+router.delete('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Profile.findOneAndRemove({ user: req.user.id })
+    .then(() => {
+      User.findOneAndRemove({ _id: req.user.id })
+        .then(() => res.json({ success: true }));
+    })
+    .catch(e => res.status(404).json(e));
 });
 
 module.exports = router;
