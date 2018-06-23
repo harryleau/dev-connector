@@ -13,3 +13,4 @@
 4. set up scripts for installing client modules and run client. 
     - "npm install --prefix client" equals "cd client && npm install" -> a command from app root to go to client directory and install npm package.
 5. set up a script like "dev" to run server and client concurrently. 
+6. install all react related modules in client folder, not app root.
