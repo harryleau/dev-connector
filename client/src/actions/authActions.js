@@ -9,7 +9,11 @@ import { SET_CURRENT_USER } from './types';
 // because we included withRouter in Register component => we can use history here.
 export const registerUser = (userData, history) => dispatch => {
   axios.post('/api/users/register', userData)
-    .then(res => history.push('/login'))
+    .then(res => {
+      history.push('/login');
+      // clear errors
+      dispatch(getErrors({}));
+    })
     .catch(err => dispatch(getErrors(err.response.data)));
 };
 
@@ -26,6 +30,8 @@ export const loginUser = userData => dispatch => {
       const decodedToken = jwt_decode(token);
       // Set current user
       dispatch(setCurrentUser(decodedToken));
+      // clear errors
+      dispatch(getErrors({}));
     })
     .catch(err => dispatch(getErrors(err.response.data)))
 };
