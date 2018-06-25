@@ -17,6 +17,11 @@ class Navbar extends Component {
 
     const authLinks = (
       <ul className="navbar-nav ml-auto">
+        <li className="nav-item">
+          <Link className="nav-link" to="/dashboard">
+            Dashboard
+          </Link>
+        </li>
         <li className="nav-item d-flex align-items-center">
         <img 
           src={user.avatar} 
@@ -30,7 +35,7 @@ class Navbar extends Component {
       </ul>
     );
 
-    const getLinks = (
+    const guestLinks = (
       <ul className="navbar-nav ml-auto">
         <li className="nav-item">
           <Link className="nav-link" to="/register">
@@ -70,7 +75,7 @@ class Navbar extends Component {
               </li>
             </ul>
 
-            {isAuthenticated ? authLinks : getLinks}
+            {isAuthenticated ? authLinks : guestLinks}
 
           </div>
         </div>
