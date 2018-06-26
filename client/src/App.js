@@ -19,6 +19,9 @@ import CreateProfile from './components/create-profile/CreateProfile';
 import EditProfile from './components/edit-profile/EditProfile';
 import AddExperience from './components/add-credentials/AddExperience';
 import AddEducation from './components/add-credentials/AddEducation';
+import Profiles from './components/profiles/Profiles';
+import Profile from './components/profile/Profile';
+import NotFound from './components/not-found/NotFound';
 
 import './App.css';
 
@@ -53,24 +56,20 @@ class App extends Component {
             <Navbar />
             <Route path="/" component={Landing} exact />
             <div className="container">
-              <Route path="/register" component={Register} exact />
-              <Route path="/login" component={Login} exact />
               <Switch>
-                <PrivateRoute path="/dashboard" component={Dashboard} exact />
-              </Switch>
-              <Switch>
+                <Route path="/register" component={Register} exact />
+                <Route path="/login" component={Login} exact />
+                <Route path="/profiles" component={Profiles} exact />
+                <Route path="/profile/:handle" component={Profile} exact />
+                <PrivateRoute path="/dashboard" component={Dashboard} />
                 <PrivateRoute path="/create-profile" component={CreateProfile} exact />
-              </Switch>
-              <Switch>
                 <PrivateRoute path="/edit-profile" component={EditProfile} exact />
-              </Switch>
-              <Switch>
                 <PrivateRoute path="/add-experience" component={AddExperience} exact />
-              </Switch>
-              <Switch>
                 <PrivateRoute path="/add-education" component={AddEducation} exact />
+                <Route path="/not-found" component={NotFound} exact />
+                <Route component={NotFound} />
               </Switch>
-            </div>
+              </div>
             <Footer />
           </div>
         </BrowserRouter>
