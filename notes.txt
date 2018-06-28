@@ -14,3 +14,12 @@
     - "npm install --prefix client" equals "cd client && npm install" -> a command from app root to go to client directory and install npm package.
 5. set up a script like "dev" to run server and client concurrently. 
 6. install all react related modules in client folder, not app root.
+
+
+
+/////////// DEPLOY
+- set static entry point to client/build/index.html
+- create a heroku postbuild script
+
+=> we dont have a dev server or react server on heroku, we need to point to the build dir and index.html (in sever.js)
+=> we dont run any build command in heroku push because we want to build it in heroku server => use heroku postbuild, we have to set the NPM_CONFIG_PRODUCTION=false to be able to install the devDependencies.
